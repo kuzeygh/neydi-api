@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.pyc
+
+.idea/
+.vscode/
+
+config.json
+
+tests_scenarios.txt
