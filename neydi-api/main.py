@@ -47,13 +47,24 @@ def add_query():
 
 @app.route('/api/new', methods=['POST'])
 def new_user():
-    token = uuid.uuid4()
+    user_val = None
     email = request.json['email']
-    (public, private) = rsa.newkeys(512)
 
-    db_result = operations.new_user(
-        token=token, email=email, public=public, private=private)
-    print(db_result)
+    (public, private) = rsa.newkeys(512)
+    token = uuid.uuid4()
+
+    try:
+        user_val = operations.get_user(email).val()
+    except:
+        pass
+
+    if user_val == None:
+        db_result = operations.new_user(token=token, email=email,
+                                        public=public, private=private)
+    else:
+        user_key = list(user_val.keys())[0]
+        db_result = operations.update_user(key=user_key, token=token, email=email,
+                                           public=public, private=private)
 
     return jsonify({'token': token, 'private-key': str(private)})
 
